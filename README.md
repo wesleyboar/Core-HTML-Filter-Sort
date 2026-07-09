@@ -4,16 +4,16 @@ Sortable, filterable HTML tables powered by [List.js](https://listjs.com/) — f
 
 ## Usage
 
-### Via CDN (jsDelivr)
+### via CDN
+
+E.g. [JSDelivr](https://www.jsdelivr.com/):
 
 ```html
 <!-- CSS -->
-<link rel="stylesheet"
-  href="https://cdn.jsdelivr.net/npm/@tacc/sortable-table@0.1.0/src/sortableTable.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tacc/sortable-table@0.1.0/src/sortableTable.css" />
 
 <!-- List.js (required global dependency) -->
-<script src="https://cdn.jsdelivr.net/npm/list.js@2.3.1/dist/list.min.js"
-  crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/list.js@2.3.1/dist/list.min.js" crossorigin="anonymous"></script>
 
 <!-- JS -->
 <script type="module">
@@ -22,12 +22,13 @@ Sortable, filterable HTML tables powered by [List.js](https://listjs.com/) — f
 </script>
 ```
 
-> **Note:** During pre-release, use commit SHA URLs instead of version tags:
+> [!NOTE]
+> During pre-release, use commit SHA URLs instead of version tags:
 > ```
-> https://cdn.jsdelivr.net/gh/wesleyboar/sortable-table@<sha>/src/sortableTable.js
+> https://cdn.jsdelivr.net/gh/wesleyboar/sortable-table@__SHA__/src/sortableTable.js
 > ```
 
-### Table markup
+### Table Markup
 
 Add `class="js-sortable"` to any `<table>`. A `<thead>` with column headers and a `<tbody>` are required.
 
@@ -65,11 +66,14 @@ Filter spec types:
 | Type | Required fields | Optional fields |
 |---|---|---|
 | `"search"` | `type` | `placeholder` |
-| `"select"` | `type`, `column` (0-based index) | `label` |
+| `"select"` | `type`, `column`\* | `label` |
+
+> [!NOTE]
+> `"column": 1` creates select filter for 1st column, `"column": 2` for 2nd column, _et cetera_. Add multiple filter objects to create multiple filters. The order of the array determines the order of the filters in the UI.
 
 The filter `<template>` is self-injected by `sortableTable.js` on first call. No extra HTML is required.
 
-### `sortableTable()` options
+### `sortableTable()` Options
 
 | Option | Default | Description |
 |---|---|---|
@@ -78,12 +82,12 @@ The filter `<template>` is self-injected by `sortableTable.js` on first call. No
 | `notSortableSelector` | `th.not-sortable` | Columns matching this are excluded |
 | `buttonClass` | `''` | Extra class(es) on sort `<button>` elements (e.g. `'btn btn-link'`) |
 
-## Third-party skin support
+## Third-Party Skin Support
 
-`sortableTable.css` includes optional visual rules that activate when these libraries are also loaded:
+`sortableTable.css` includes styles for:
 
-- **[TACC Core-Styles](https://github.com/TACC/Core-Styles):** Enhances the result-count font size (`--global-font-size--small`) and sort buttons styled as links (`.c-button--as-link`).
-- **[Bootstrap](https://getbootstrap.com/) ≥4:** Supports sort buttons styled as links (`.btn-link`).
+- **[TACC Core-Styles v2](https://github.com/TACC/Core-Styles)** e.g. `--global-font-size--small`, `.c-button--as-link`.
+- **[Bootstrap](https://getbootstrap.com/) v4+:** e.g. `.btn.btn-link`.
 
 The table sorts and filters correctly without either library.
 
