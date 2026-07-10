@@ -3,7 +3,8 @@
   "packages": {
     ".": {
       "release-type": "node",
-      "package-name": "@tacc/sort-table"
+      "package-name": "@tacc/sort-table",
+      "skip-changelog": true
     }
   }
 }
