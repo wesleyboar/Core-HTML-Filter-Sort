@@ -49,29 +49,21 @@ Add `class="js-sortable"` to any `<table>`. A `<thead>` with column headers and 
 
 ### Filter UI
 
-To auto-build a filter bar above a table, add `id` and `data-sortable-filters` (JSON array of filter specs) to the table:
+To auto-build a filter bar above a table, add `id` and filter attributes to the table:
+
+- `data-sortable-search` — include a search input (boolean presence attribute)
+- `data-sortable-select-cols` — comma-separated column numbers, one select filter per number
 
 ```html
 <table id="my-table" class="js-sortable"
-  data-sortable-filters='[
-    { "type": "search" },
-    { "type": "select", "column": 1 }
-  ]'>
+  data-sortable-search
+  data-sortable-select-cols="1,3">
   …
 </table>
 ```
 
-Filter Specifications:
-
-| Type | Required Fields | Optional Fields |
-|---|---|---|
-| `"search"` | `type` | `placeholder` |
-| `"select"` | `type`, `column` | `label` |
-
 > [!NOTE]
-> `"column": 1` creates select filter for 1st column, `"column": 2` for 2nd column, _et cetera_. Add multiple filter objects to create multiple filters. The order of the array determines the order of the filters in the UI.
-
-The filter `<template>` is self-injected by `sortableTable.js` on first call. No extra HTML is required.
+> `data-sortable-select-cols="1"` creates a select filter for the **1st** column, `"2"` for the **2nd**, _et cetera_. Select filter labels are auto-derived from `<th>` text. The filter markup is self-injected by `sortableTable.js` on first call (no extra manual HTML required).
 
 ### `sortableTable()` Options
 

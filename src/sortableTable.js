@@ -20,7 +20,6 @@ const DEPEND_BUTTON_CLASS = 'js-sort';
 
 const DEFAULT_TABLE_SELECTOR = 'table.' + SORT_TABLE_CLASS;
 const NOT_SORTABLE_SELECTOR = 'th.not-sortable';
-const FILTERS_DATA_ATTR = 'data-sortable-filters';
 
 const FILTER_TEMPLATE_ID = 'sortable-table-filters';
 const FILTER_SEARCH_LABEL_SELECTOR = 'label:has(input[type="search"])';
@@ -30,8 +29,8 @@ let listJsMissingLogged = false;
 
 /**
  * @typedef {FilterSpecForSearch | FilterSpecForSelect} FilterSpec
- * @typedef {{ type: 'search', placeholder?: string }} FilterSpecForSearch
- * @typedef {{ type: 'select', column: number, label?: string }} FilterSpecForSelect - column is 1-based
+ * @typedef {{ type: 'search' }} FilterSpecForSearch
+ * @typedef {{ type: 'select', column: number }} FilterSpecForSelect - column is 1-based
  */
 
 /**
@@ -58,24 +57,24 @@ function registerFilterControl(control, tableId) {
  * @param {HTMLTableElement} table
  * @returns {FilterSpec[] | null}
  */
-function parseFilterSpecs(table) {
-  const json = table.getAttribute(FILTERS_DATA_ATTR);
-  if (!json) {
-    return null;
+function readFilterAttrs(table) {
+  const specs = [];
+
+  if (table.hasAttribute('data-sortable-search')) {
+    specs.push({ type: 'search' });
   }
-  try {
-    const specs = JSON.parse(json);
-    if (!Array.isArray(specs) || !specs.length) {
-      return null;
+
+  const selectCols = table.getAttribute('data-sortable-select-cols');
+  if (selectCols) {
+    for (const raw of selectCols.split(',')) {
+      const col = parseInt(raw.trim(), 10);
+      if (!isNaN(col) && col > 0) {
+        specs.push({ type: 'select', column: col });
+      }
     }
-    return specs;
-  } catch {
-    console.warn(
-      '[sortableTable] Invalid JSON in data-sortable-filters.',
-      table
-    );
-    return null;
   }
+
+  return specs.length ? specs : null;
 }
 
 /**
@@ -172,18 +171,14 @@ function clonePageTemplate(templateId) {
 /**
  * @param {HTMLLabelElement} searchLabel
  * @param {string} tableId
- * @param {FilterSpecForSearch} spec
  * @returns {string} control id
  */
-function wireSearchFilterLabel(searchLabel, tableId, spec) {
+function wireSearchFilterLabel(searchLabel, tableId) {
   const input = searchLabel.querySelector('input[type="search"]');
   const controlId = getFilterControlId(tableId, 'search');
 
   searchLabel.htmlFor = controlId;
   input.id = controlId;
-  if (spec.placeholder) {
-    input.placeholder = spec.placeholder;
-  }
   registerFilterControl(input, tableId);
 
   return controlId;
@@ -246,7 +241,7 @@ function buildFilterFieldset(table, specs, searchIconClass, countClass) {
   /* buildSearchField */
   if (searchSpec) {
     filterControlIds.push(
-      wireSearchFilterLabel(searchField, table.id, searchSpec)
+      wireSearchFilterLabel(searchField, table.id)
     );
   } else {
     searchField.remove();
@@ -277,13 +272,13 @@ function buildFilterFieldset(table, specs, searchIconClass, countClass) {
  * @param {string} countClass
  */
 function buildFilters(table, searchIconClass, countClass) {
-  const specs = parseFilterSpecs(table);
+  const specs = readFilterAttrs(table);
   if (!specs) {
     return;
   }
   if (!table.id) {
     console.warn(
-      '[sortableTable] data-sortable-filters requires a table id; skipping filter UI.',
+      '[sortableTable] Filter attributes require a table id; skipping filter UI.',
       table
     );
     return;
