@@ -11,13 +11,9 @@ E.g. [JSDelivr](https://www.jsdelivr.com/):
 ```html
 <!-- CSS -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tacc/sort-table@0.1.0/src/sortableTable.css" />
-<!-- optional: load after sortableTable.css when using Core-Styles or Bootstrap -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tacc/sort-table@0.1.0/src/sortableTable.skins.css" />
-
-<!-- List.js (required global dependency) -->
-<script src="https://cdn.jsdelivr.net/npm/list.js@2.3.1/dist/list.min.js" crossorigin="anonymous"></script>
 
 <!-- JS -->
+<script src="https://cdn.jsdelivr.net/npm/list.js@2.3.1/dist/list.min.js" crossorigin="anonymous">/* List.js (required global dependency for @tacc/sort-table) */</script>
 <script type="module">
   import sortableTable from 'https://cdn.jsdelivr.net/npm/@tacc/sort-table@0.1.0/src/sortableTable.js';
   sortableTable();
