@@ -1,0 +1,23 @@
+/* CORE-STYLES */
+.sortable-filter output {
+  font-size: var(--global-font-size--small);
+}
+label.sortable-filter output {
+  font-weight: normal;
+}
+
+/* CORE-STYLES + BOOTSTRAP */
+/* To fix sort button height and alignment */
+button.js-sort {
+  &.btn-link,
+  &.c-button--as-link {
+    line-height: inherit;
+    height: 1lh;
+    justify-content: start;
+    align-items: baseline;
+    vertical-align: baseline;
+  }
+  &.btn-link {
+    padding: 0;
+  }
+}

@@ -9,13 +9,8 @@ Sortable, filterable HTML tables powered by [List.js](https://listjs.com/) — f
 E.g. [JSDelivr](https://www.jsdelivr.com/):
 
 ```html
-<!-- CSS -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tacc/sort-table@0.1.0/src/sortableTable.css" />
-
-<!-- List.js (required global dependency) -->
-<script src="https://cdn.jsdelivr.net/npm/list.js@2.3.1/dist/list.min.js" crossorigin="anonymous"></script>
-
-<!-- JS -->
+<script src="https://cdn.jsdelivr.net/npm/list.js@2.3.1/dist/list.min.js" crossorigin="anonymous">/* List.js (required global dependency for @tacc/sort-table) */</script>
 <script type="module">
   import sortableTable from 'https://cdn.jsdelivr.net/npm/@tacc/sort-table@0.1.0/src/sortableTable.js';
   sortableTable();
@@ -76,12 +71,10 @@ To auto-build a filter bar above a table, add `id` and filter attributes to the 
 
 ## Third-Party Skin Support
 
-`sortableTable.css` includes styles for:
-
-- **[TACC Core-Styles v2](https://github.com/TACC/Core-Styles)** e.g. `--global-font-size--small`, `.c-button--as-link`, `.icon.icon-…`.
-- **[Bootstrap](https://getbootstrap.com/) v4+:** e.g. `.btn.btn-link`.
-
-The table sorts and filters correctly without either library.
+### [TACC/Core-Styles](https://github.com/TACC/Core-Styles) v2+
+- `--global-font-size--small`
+- `.c-button--as-link`
+- [Bootstrap](https://getbootstrap.com/) `.btn-link`
 
 ## Requirements
 
