@@ -47,10 +47,12 @@ jobs:
           git checkout -B release
           git add package.json package-lock.json
           git commit -m "chore: release v${{ steps.version.outputs.version }}"
-          git tag "v${{ steps.version.outputs.version }}"
+          git tag -f "v${{ steps.version.outputs.version }}"
 
       - name: Push release branch and tag
-        run: git push origin release --force-with-lease --tags
+        run: |
+          git push origin release --force-with-lease
+          git push origin "refs/tags/v${{ steps.version.outputs.version }}" --force
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
