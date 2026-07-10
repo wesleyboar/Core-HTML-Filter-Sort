@@ -25,7 +25,7 @@ E.g. [JSDelivr](https://www.jsdelivr.com/):
 > [!NOTE]
 > During pre-release, use commit SHA URLs instead of version tags:
 > ```
-> https://cdn.jsdelivr.net/gh/wesleyboar/sortable-table@__SHA__/src/sortableTable.js
+> https://cdn.jsdelivr.net/gh/wesleyboar/sort-table@__SHA__/src/sortableTable.js
 > ```
 
 ### Table Markup
