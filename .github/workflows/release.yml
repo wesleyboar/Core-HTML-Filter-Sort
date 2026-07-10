@@ -41,6 +41,26 @@ jobs:
         id: version
         run: echo "version=$(node -p "require('./package.json').version")" >> "$GITHUB_OUTPUT"
 
+      - name: Check tag does not already exist
+        run: |
+          VERSION="v${{ steps.version.outputs.version }}"
+          if git ls-remote --tags origin | grep -q "refs/tags/${VERSION}$"; then
+            echo "::error::Tag ${VERSION} already exists on the remote."
+            echo ""
+            echo "This is usually left over from a failed workflow run."
+            echo "Before re-running, confirm whether ${VERSION} was published to npm:"
+            echo ""
+            echo "  npm view @tacc/sort-table@${{ steps.version.outputs.version }} version"
+            echo ""
+            echo "If it was NOT published, delete the stale tag and re-run this workflow:"
+            echo ""
+            echo "  git push origin --delete ${VERSION}"
+            echo "  git tag -d ${VERSION}  # if present locally"
+            echo ""
+            echo "If it WAS published, do not re-release it. Run the workflow again and choose a higher bump."
+            exit 1
+          fi
+
       - name: Commit and tag on release branch
         run: |
           # Reset release branch to current main HEAD, then apply the bump
