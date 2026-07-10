@@ -78,7 +78,6 @@ table.js-filtersort {
 
   & button.js-sort::after {
     font-size: smaller;
-    align-self: self-end;
   }
   & th[aria-sort="ascending"] > button.js-sort::after { content: '▲'; }
   & th[aria-sort="descending"] > button.js-sort::after { content: '▼'; }
