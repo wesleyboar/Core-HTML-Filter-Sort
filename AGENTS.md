@@ -11,7 +11,6 @@ This is a **vanilla JavaScript npm package**. No build step, no bundler, no serv
 ### Dependencies
 
 - When updating dependencies, use `npm` commands (e.g. `uninstall`/`install`); do not hand-edit lockfile entries.
-- When installing `@tacc/core-styles`, use a published version from the registry, or a `git+https://github.com/...` spec so install does not require SSH.
 
 ## Commits
 
