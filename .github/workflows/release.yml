@@ -18,8 +18,12 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      pull-requests: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Fetch full history so the release branch can be reset to main's HEAD
+          fetch-depth: 0
 
       - uses: actions/setup-node@v4
         with:
@@ -37,14 +41,16 @@ jobs:
         id: version
         run: echo "version=$(node -p "require('./package.json').version")" >> "$GITHUB_OUTPUT"
 
-      - name: Commit and tag
+      - name: Commit and tag on release branch
         run: |
+          # Reset release branch to current main HEAD, then apply the bump
+          git checkout -B release
           git add package.json package-lock.json
           git commit -m "chore: release v${{ steps.version.outputs.version }}"
           git tag "v${{ steps.version.outputs.version }}"
 
-      - name: Push commit and tag
-        run: git push origin main --follow-tags
+      - name: Push release branch and tag
+        run: git push origin release --force-with-lease --tags
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
@@ -52,3 +58,16 @@ jobs:
           tag_name: v${{ steps.version.outputs.version }}
           name: v${{ steps.version.outputs.version }}
           generate_release_notes: true
+
+      - name: Open sync PR to main
+        run: |
+          gh pr create \
+            --base main \
+            --head release \
+            --title "chore: sync v${{ steps.version.outputs.version }} to main" \
+            --body "Automated version bump from the [Release workflow](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}).
+
+          Merging this syncs \`package.json\` (and \`package-lock.json\`) back to \`main\` after the npm publish has already completed." \
+            --label "release" || true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
