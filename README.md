@@ -1,4 +1,4 @@
-# TACC: Filter-Sort
+# TACC: HTML Filter-Sort
 
 Filterable, sortable HTML tables powered by [List.js](https://listjs.com/) — optimized for [TACC/Core-CMS](https://github.com/TACC/Core-CMS) pages.
 
