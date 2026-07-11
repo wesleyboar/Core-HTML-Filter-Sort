@@ -17,7 +17,7 @@ E.g. [JSDelivr](https://www.jsdelivr.com/):
 </script>
 ```
 
-> [!NOTE]
+> **Note:**
 > During pre-release, use commit SHA URLs instead of version tags:
 > ```
 > https://cdn.jsdelivr.net/gh/wesleyboar/filter-sort@__SHA__/src/filtersort.js
@@ -57,7 +57,7 @@ To auto-build a filter bar above a table, add `id` and filter attributes to the 
 </table>
 ```
 
-> [!NOTE]
+> **Note:**
 > `data-filtersort-select-cols="1"` creates a select filter for the **1st** column, `"2"` for the **2nd**, _et cetera_. Select filter labels are auto-derived from `<th>` text. The filter markup is self-injected by `filtersort.js` on first call (no extra manual HTML required).
 
 ### `filtersort()` Options
