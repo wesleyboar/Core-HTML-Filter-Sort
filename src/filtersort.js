@@ -1,27 +1,16 @@
-/**
- * Convert Simple, Plain Tables into Sortable Tables
- * IMPORTANT: Requires global `List` from CDN.
- * API:
- *     - ./sortableTable.css
- *     - ./sortableTable.js
- *     - ./sortableTableTemplate.js
- * SEE: https://github.com/javve/list.js
- * SEE: https://www.w3.org/WAI/ARIA/apg/patterns/table/examples/sortable-table/
- */
+import { FILTER_TEMPLATE_HTML } from './filtersort.html.js';
 
-import { FILTER_TEMPLATE_HTML } from './sortableTableTemplate.js';
-
-const SORT_TABLE_CLASS = 'js-sortable';
-const FILTER_CLASS = 'js-sortable-filter';
-const FILTER_LIST_CLASS = 'js-sortable-filter-list';
-const OUTPUT_CLASS = 'js-sortable-total';
+const SORT_TABLE_CLASS = 'js-filtersort';
+const FILTER_CLASS = 'js-filtersort-filter';
+const FILTER_LIST_CLASS = 'js-filtersort-form';
+const OUTPUT_CLASS = 'js-filtersort-total';
 const DEPEND_LIST_CLASS = 'js-list';
 const DEPEND_BUTTON_CLASS = 'js-sort';
 
 const DEFAULT_TABLE_SELECTOR = 'table.' + SORT_TABLE_CLASS;
-const NOT_SORTABLE_SELECTOR = 'th.not-sortable';
+const NOT_SORTABLE_SELECTOR = 'th.not-filtersort';
 
-const FILTER_TEMPLATE_ID = 'sortable-table-filters';
+const FILTER_TEMPLATE_ID = 'filtersort-form';
 const FILTER_SEARCH_LABEL_SELECTOR = 'label:has(input[type="search"])';
 const FILTER_SELECT_LABEL_SELECTOR = 'label:has(select)';
 
@@ -60,11 +49,11 @@ function registerFilterControl(control, tableId) {
 function readFilterAttrs(table) {
   const specs = [];
 
-  if (table.hasAttribute('data-sortable-search')) {
+  if (table.hasAttribute('data-filtersort-search')) {
     specs.push({ type: 'search' });
   }
 
-  const selectCols = table.getAttribute('data-sortable-select-cols');
+  const selectCols = table.getAttribute('data-filtersort-select-cols');
   if (selectCols) {
     for (const raw of selectCols.split(',')) {
       const col = parseInt(raw.trim(), 10);
@@ -161,7 +150,7 @@ function clonePageTemplate(templateId) {
 
   if (!(template instanceof HTMLTemplateElement)) {
     throw new Error(
-      '[sortableTable] Missing <template id="' + templateId + '">.'
+      '[filtersort] Missing <template id="' + templateId + '">.'
     );
   }
 
@@ -191,8 +180,8 @@ function wireSearchFilterLabel(searchLabel, tableId) {
  * @returns {string} control id
  */
 function wireSelectFilterLabel(label, table, spec) {
-  const caption = label.querySelector('.sortable-filter__label');
-  const select = label.querySelector('select.sortable-filter__input');
+  const caption = label.querySelector('.filtersort__label');
+  const select = label.querySelector('select.filtersort__input');
   const controlId = getFilterControlId(table.id, `col-${spec.column}`);
 
   label.htmlFor = controlId;
@@ -223,7 +212,7 @@ function buildFilterFieldset(table, specs, searchIconClass, countClass) {
   );
 
   if (searchIconClass) {
-    fieldset.querySelector('.sortable-filter__icon')
+    fieldset.querySelector('.filtersort__icon')
       ?.classList.add(...searchIconClass.split(' ').filter(Boolean));
   }
   if (countClass) {
@@ -278,7 +267,7 @@ function buildFilters(table, searchIconClass, countClass) {
   }
   if (!table.id) {
     console.warn(
-      '[sortableTable] Filter attributes require a table id; skipping filter UI.',
+      '[filtersort] Filter attributes require a table id; skipping filter UI.',
       table
     );
     return;
@@ -296,7 +285,7 @@ function buildFilters(table, searchIconClass, countClass) {
 function warnIfRowCellMissing(table, cell) {
   if (!cell) {
     console.warn(
-      '[sortableTable] A row is missing a cell for the sorted column. Use the same number of columns on every row in the CMS table (watch colspan/rowspan).',
+      '[filtersort] A row is missing a cell for the sorted column. Use the same number of columns on every row in the CMS table (watch colspan/rowspan).',
       table
     );
   }
@@ -475,7 +464,7 @@ function prepSortableTable(table, scopeElement, notSortableSelector, buttonClass
   const headerRow = table.tHead?.rows[0];
   if (!headerRow) {
     console.warn(
-      '[sortableTable] Table has no thead; skipping sortable enhancement.',
+      '[filtersort] Table has no thead; skipping sortable enhancement.',
       table
     );
     return;
@@ -483,7 +472,7 @@ function prepSortableTable(table, scopeElement, notSortableSelector, buttonClass
 
   const tbody = table.tBodies[0];
   if (!tbody) {
-    console.warn('[sortableTable] Table has no tbody; skipping.', table);
+    console.warn('[filtersort] Table has no tbody; skipping.', table);
     return;
   }
 
@@ -530,7 +519,7 @@ function prepSortableTable(table, scopeElement, notSortableSelector, buttonClass
 
   if (!columns.length) {
     console.warn(
-      '[sortableTable] No sortable columns after prep; skipping.',
+      '[filtersort] No sortable columns after prep; skipping.',
       table
     );
     return;
@@ -552,7 +541,6 @@ function prepSortableTable(table, scopeElement, notSortableSelector, buttonClass
 
 /**
  * Inject the filter `<template>` into the DOM if not already present.
- * Consumers who serve sortableTableTemplate.html directly can skip this.
  */
 function ensureFilterTemplate() {
   if (document.getElementById(FILTER_TEMPLATE_ID)) {
@@ -567,13 +555,13 @@ function ensureFilterTemplate() {
 /**
  * @param {object} [options]
  * @param {ParentNode} [options.scopeElement=document]
- * @param {string} [options.tableSelector=table.js-sortable]
- * @param {string} [options.notSortableSelector=th.not-sortable]
+ * @param {string} [options.tableSelector=table.js-filtersort]
+ * @param {string} [options.notSortableSelector=th.not-filtersort]
  * @param {string} [options.buttonClass=''] // e.g. 'c-button c-button--as-link'
  * @param {string} [options.searchIconClass=''] // e.g. 'icon icon-search icon-md'
  * @param {string} [options.countClass=''] // e.g. 'text-truncate'
  */
-export default function sortableTable({
+export default function filtersort({
   scopeElement = document,
   tableSelector = DEFAULT_TABLE_SELECTOR,
   notSortableSelector = NOT_SORTABLE_SELECTOR,
@@ -585,7 +573,7 @@ export default function sortableTable({
     if (!listJsMissingLogged) {
       listJsMissingLogged = true;
       console.error(
-        '[sortableTable] List.js is not loaded; sortable tables will not be enhanced.'
+        '[filtersort] List.js is not loaded; sortable tables will not be enhanced.'
       );
     }
     return;
