@@ -9,10 +9,10 @@ Filterable, sortable HTML tables powered by [List.js](https://listjs.com/) — o
 E.g. [JSDelivr](https://www.jsdelivr.com/):
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tacc/filter-sort@0.1.0/src/filtersort.css" />
-<script src="https://cdn.jsdelivr.net/npm/list.js@2.3.1/dist/list.min.js" crossorigin="anonymous">/* List.js (required global dependency for @tacc/filter-sort) */</script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tacc/html-filter-sort@0/src/filtersort.css" />
+<script src="https://cdn.jsdelivr.net/npm/list.js@2.3.1/dist/list.min.js" crossorigin="anonymous">/* List.js (required global dependency for @tacc/html-filter-sort) */</script>
 <script type="module">
-  import filtersort from 'https://cdn.jsdelivr.net/npm/@tacc/filter-sort@0.1.0/src/filtersort.js';
+  import filtersort from 'https://cdn.jsdelivr.net/npm/@tacc/html-filter-sort@0/src/filtersort.js';
   filtersort();
 </script>
 ```

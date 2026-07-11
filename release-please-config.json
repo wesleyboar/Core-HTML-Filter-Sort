@@ -4,7 +4,7 @@
   "packages": {
     ".": {
       "release-type": "node",
-      "package-name": "@tacc/sort-table",
+      "package-name": "@tacc/html-filter-sort",
       "skip-changelog": true,
       "include-component-in-tag": false
     }
