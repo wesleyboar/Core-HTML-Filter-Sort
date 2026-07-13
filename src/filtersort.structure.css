@@ -41,11 +41,13 @@
   margin-left: 1em;
 }
 
-/* to align icon atop search field */
 .filtersort__filter:has([type="search"]) {
+  /* to set max and min width of field */
+  flex-grow: 1;
+
+  /* to align icon atop search field */
   display: grid;
   grid-auto-flow: column;
-
   & .filtersort__input {
     grid-row: 1 / 1;
     grid-column: 1 / 2;
@@ -59,7 +61,7 @@
 
   /* to place icon inside search field */
   .filtersort__input {
-    width: 30ch;
+    min-width: 14ch; /* to require enough space to read placeholder */
     text-indent: calc(var(--icon-width) + var(--icon-pad-horz));
   }
   .filtersort__icon {
