@@ -10,7 +10,7 @@ E.g. [JSDelivr](https://www.jsdelivr.com/):
 
 ```html
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tacc/html-filter-sort@0/src/filtersort.css" />
-<script src="https://cdn.jsdelivr.net/npm/list.js@2.3.1/dist/list.min.js" crossorigin="anonymous">/* List.js (required global dependency for @tacc/html-filter-sort) */</script>
+<script src="https://cdn.jsdelivr.net/npm/list.js-fixed@2/dist/list.min.js" crossorigin="anonymous">/* List.js (required global dependency for @tacc/html-filter-sort) */</script>
 <script type="module">
   import filtersort from 'https://cdn.jsdelivr.net/npm/@tacc/html-filter-sort@0/src/filtersort.js';
   filtersort();
@@ -93,4 +93,4 @@ If a select filter's cell can hold more than one category (e.g. a "Tags" column)
 
 ## Requirements
 
-- `list.js` ≥2 must be loaded as `window.List` before `filtersort()` is called.
+- A `window.List` ≥2 global must be loaded before `filtersort()` is called: [`list.js-fixed`](https://www.npmjs.com/package/list.js-fixed) ([why not upstream `list.js`](https://github.com/javve/list.js/issues/699)), or upstream `list.js` if you don't need punctuation (e.g. a comma) to work in the search box.
