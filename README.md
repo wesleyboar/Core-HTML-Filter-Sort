@@ -93,6 +93,6 @@ If a select filter's cell can hold more than one category (e.g. a "Tags" column)
 
 ## Requirements
 
-- A `window.List` ≥2 global must be loaded before `filtersort()` is called:
+- A global `window.List` instance (≥ version 2) must be loaded before `filtersort()` is called. Use:
     - **either** [`list.js-fixed`](https://www.npmjs.com/package/list.js-fixed) ([to fix bug with punctuation in search](https://github.com/javve/list.js/issues/699))
-    - **or** [`list.js`](https://www.npmjs.com/package/list.js) if user need not search punctuation.
+    - **or** [`list.js`](https://www.npmjs.com/package/list.js) if user need not search punctuation
