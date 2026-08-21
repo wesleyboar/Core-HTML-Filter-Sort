@@ -182,6 +182,7 @@ function wireSelectFilterLabel(label, table, spec) {
   label.htmlFor = controlId;
   setSelectFilterCaption(caption, table, spec);
   select.id = controlId;
+  select.dataset.filtersortColumn = String(spec.column - 1);
   registerFilterControl(select, table.id);
 
   for (const optionText of collectSelectOptions(table, spec.column - 1)) {
@@ -353,6 +354,7 @@ function setHeaderSortState(th, ariaSort) {
  * List.js instance after sortable prep (subset used for client-side filter)
  * @typedef {object} SortableTableList
  * @property {(query?: string) => void} search
+ * @property {(predicate?: (item: { elm: HTMLTableRowElement }) => boolean) => void} filter
  * @property {object[]} matchingItems
  * @property {(event: string, callback: () => void) => void} on
  */
@@ -446,18 +448,40 @@ function wireFilters(table, list, scopeElement) {
     return;
   }
 
+  const searchControls = [ ...filterControls ].filter(
+    (el) => el instanceof HTMLInputElement
+  );
+  const selectControls = [ ...filterControls ].filter(
+    (el) => el instanceof HTMLSelectElement
+  );
+
   const applyFilters = () => {
-    const terms = [ ...filterControls ].map(el =>
-        (el instanceof HTMLInputElement || el instanceof HTMLSelectElement
-          ? el.value
-          : ''
-      ).trim())
-      .filter(Boolean);
-    if (terms.length) {
-      list.search(terms.join(' '));
+    // Select values are exact category names (may contain punctuation List.js's
+    // fuzzy `search()` mishandles, e.g. a comma), so match them directly against
+    // each row's own categories via `filter()` instead of routing them through
+    // `search()`. Applied before `search()` so the latter's `searchComplete`
+    // (which the result count listens to) reflects both together.
+    const activeSelects = selectControls
+      .map((el) => ({
+        columnIndex: Number(el.dataset.filtersortColumn),
+        value: el.value.trim(),
+      }))
+      .filter((select) => select.value);
+
+    if (activeSelects.length) {
+      list.filter((item) =>
+        activeSelects.every(({ columnIndex, value }) =>
+          getCellCategoryTexts(item.elm.cells[columnIndex]).includes(value)
+        )
+      );
     } else {
-      list.search();
+      list.filter();
     }
+
+    const searchTerms = searchControls
+      .map((el) => el.value.trim())
+      .filter(Boolean);
+    list.search(searchTerms.join(' '));
   };
 
   for (const el of filterControls) {
