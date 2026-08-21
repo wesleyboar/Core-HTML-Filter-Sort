@@ -23,9 +23,6 @@ E.g. [JSDelivr](https://www.jsdelivr.com/):
 > https://cdn.jsdelivr.net/gh/wesleyboar/filter-sort@__SHA__/src/filtersort.js
 > ```
 
-> **Note:**
-> If you pin an `integrity` (SRI) hash on the List.js `<script>` tag, it's tied to that exact file's bytes — changing the package name or version without recomputing the hash makes the browser silently refuse to run the script, and `filtersort()` will then warn that List.js isn't loaded.
-
 ### Table Markup
 
 Add `class="js-filtersort"` to any `<table>`. A `<thead>` with column headers and a `<tbody>` are required.
