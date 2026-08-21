@@ -114,12 +114,7 @@ function collectSelectOptions(table, columnIndex) {
     const cell = row.cells[columnIndex];
     warnIfRowCellMissing(table, cell);
 
-    const optionsFromCellText = getCellText(cell)
-      .split(',')
-      .map((piece) => piece.trim())
-      .filter(Boolean);
-
-    for (const optionText of optionsFromCellText) {
+    for (const optionText of getCellCategoryTexts(cell)) {
       if (seen.has(optionText)) {
         continue;
       }
@@ -304,6 +299,33 @@ function getCellText(cell) {
   const link = cell.querySelector('a');
   const text = link ? link.textContent : cell.textContent;
   return (text ?? '').trim();
+}
+
+/**
+ * Discrete category values for a select filter's cell.
+ *
+ * A cell with multiple categories must wrap each one in its own child
+ * element (e.g. two `<p>` or two `<span>` tags); those child elements are
+ * read individually so a category's own text (which may contain a comma) is
+ * never split apart, and the parent cell's flattened text is never read as
+ * an extra, concatenated category. A cell with zero or one child element is
+ * treated as a single category, using the whole cell's text.
+ *
+ * @param {HTMLTableCellElement | undefined} cell
+ * @returns {string[]}
+ */
+function getCellCategoryTexts(cell) {
+  if (!cell) {
+    return [];
+  }
+  const categoryEls = [ ...cell.children ];
+  if (categoryEls.length > 1) {
+    return categoryEls
+      .map((el) => (el.textContent ?? '').trim())
+      .filter(Boolean);
+  }
+  const text = getCellText(cell);
+  return text ? [ text ] : [];
 }
 
 /**
