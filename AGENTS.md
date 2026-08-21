@@ -3,7 +3,6 @@
 - [Architecture](#architecture)
 - [Commits](#commits)
 - [Pull Requests](#pull-requests)
-  - [Review Comments](#review-comments)
 
 ## Architecture
 
