@@ -60,6 +60,21 @@ To auto-build a filter bar above a table, add `id` and filter attributes to the 
 > **Note:**
 > `data-filtersort-select-cols="1"` creates a select filter for the **1st** column, `"2"` for the **2nd**, _et cetera_. Select filter labels are auto-derived from `<th>` text. The filter markup is self-injected by `filtersort.js` on first call (no extra manual HTML required).
 
+If a select filter's cell can hold more than one category (e.g. a "Tags" column), wrap each category in its own child element, such as a `<p>` or `<span>`. Each child element becomes a separate, exact-text filter option — so a category name may safely contain a comma.
+
+```html
+<td>
+  <span>Software, Algorithms &amp; Something</span>
+</td>
+<td>
+  <span>Acategory</span>
+  <span>Bcategory</span>
+</td>
+```
+
+> **Note:**
+> A cell with zero or one child element is treated as a single category using its whole text (same as a plain `<td>Active</td>`).
+
 ### `filtersort()` Options
 
 | Option | Default | Description |
