@@ -178,13 +178,15 @@ function wireSelectFilterLabel(label, table, spec) {
   const caption = label.querySelector('.filtersort__label');
   const select = label.querySelector('select.filtersort__input');
   const controlId = getFilterControlId(table.id, `col-${spec.column}`);
+  const columnIndex = spec.column - 1;
 
   label.htmlFor = controlId;
   setSelectFilterCaption(caption, table, spec);
   select.id = controlId;
+  select.dataset.filtersortColumn = String(columnIndex);
   registerFilterControl(select, table.id);
 
-  for (const optionText of collectSelectOptions(table, spec.column - 1)) {
+  for (const optionText of collectSelectOptions(table, columnIndex)) {
     const option = document.createElement('option');
     option.textContent = optionText;
     select.append(option);
@@ -329,6 +331,20 @@ function getCellCategoryTexts(cell) {
 }
 
 /**
+ * Whether `item`'s own categories satisfy every active select filter —
+ * exact match, since List.js's `search()` mishandles punctuation like a comma.
+ *
+ * @param {{ elm: HTMLTableRowElement }} item
+ * @param {{ columnIndex: number, value: string }[]} activeSelects
+ * @returns {boolean}
+ */
+function matchesActiveSelects(item, activeSelects) {
+  return activeSelects.every(({ columnIndex, value }) =>
+    getCellCategoryTexts(item.elm.cells[columnIndex]).includes(value)
+  );
+}
+
+/**
  * @param {HTMLTableCellElement} th
  * @param {'ascending' | 'descending' | 'none'} ariaSort
  */
@@ -353,6 +369,7 @@ function setHeaderSortState(th, ariaSort) {
  * List.js instance after sortable prep (subset used for client-side filter)
  * @typedef {object} SortableTableList
  * @property {(query?: string) => void} search
+ * @property {(predicate?: (item: { elm: HTMLTableRowElement }) => boolean) => void} filter
  * @property {object[]} matchingItems
  * @property {(event: string, callback: () => void) => void} on
  */
@@ -446,18 +463,30 @@ function wireFilters(table, list, scopeElement) {
     return;
   }
 
+  const searchControls = [ ...filterControls ].filter(
+    (el) => el instanceof HTMLInputElement
+  );
+  const selectControls = [ ...filterControls ].filter(
+    (el) => el instanceof HTMLSelectElement
+  );
+
   const applyFilters = () => {
-    const terms = [ ...filterControls ].map(el =>
-        (el instanceof HTMLInputElement || el instanceof HTMLSelectElement
-          ? el.value
-          : ''
-      ).trim())
+    const activeSelects = selectControls
+      .map((el) => ({
+        columnIndex: Number(el.dataset.filtersortColumn),
+        value: el.value.trim(),
+      }))
+      .filter((select) => select.value);
+
+    const filterByActiveSelects = activeSelects.length
+      ? (item) => matchesActiveSelects(item, activeSelects)
+      : undefined;
+    list.filter(filterByActiveSelects);
+
+    const searchTerms = searchControls
+      .map((el) => el.value.trim())
       .filter(Boolean);
-    if (terms.length) {
-      list.search(terms.join(' '));
-    } else {
-      list.search();
-    }
+    list.search(searchTerms.join(' '));
   };
 
   for (const el of filterControls) {
