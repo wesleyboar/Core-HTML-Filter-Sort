@@ -178,14 +178,15 @@ function wireSelectFilterLabel(label, table, spec) {
   const caption = label.querySelector('.filtersort__label');
   const select = label.querySelector('select.filtersort__input');
   const controlId = getFilterControlId(table.id, `col-${spec.column}`);
+  const columnIndex = spec.column - 1;
 
   label.htmlFor = controlId;
   setSelectFilterCaption(caption, table, spec);
   select.id = controlId;
-  select.dataset.filtersortColumn = String(spec.column - 1);
+  select.dataset.filtersortColumn = String(columnIndex);
   registerFilterControl(select, table.id);
 
-  for (const optionText of collectSelectOptions(table, spec.column - 1)) {
+  for (const optionText of collectSelectOptions(table, columnIndex)) {
     const option = document.createElement('option');
     option.textContent = optionText;
     select.append(option);
@@ -330,6 +331,20 @@ function getCellCategoryTexts(cell) {
 }
 
 /**
+ * Whether `item`'s own categories contain every active select's value —
+ * exact match, since List.js's `search()` mishandles punctuation like a comma.
+ *
+ * @param {{ elm: HTMLTableRowElement }} item
+ * @param {{ columnIndex: number, value: string }[]} activeSelects
+ * @returns {boolean}
+ */
+function selectFiltersMatch(item, activeSelects) {
+  return activeSelects.every(({ columnIndex, value }) =>
+    getCellCategoryTexts(item.elm.cells[columnIndex]).includes(value)
+  );
+}
+
+/**
  * @param {HTMLTableCellElement} th
  * @param {'ascending' | 'descending' | 'none'} ariaSort
  */
@@ -456,11 +471,6 @@ function wireFilters(table, list, scopeElement) {
   );
 
   const applyFilters = () => {
-    // Select values are exact category names (may contain punctuation List.js's
-    // fuzzy `search()` mishandles, e.g. a comma), so match them directly against
-    // each row's own categories via `filter()` instead of routing them through
-    // `search()`. Applied before `search()` so the latter's `searchComplete`
-    // (which the result count listens to) reflects both together.
     const activeSelects = selectControls
       .map((el) => ({
         columnIndex: Number(el.dataset.filtersortColumn),
@@ -468,16 +478,11 @@ function wireFilters(table, list, scopeElement) {
       }))
       .filter((select) => select.value);
 
-    if (activeSelects.length) {
-      list.filter((item) =>
-        activeSelects.every(({ columnIndex, value }) =>
-          getCellCategoryTexts(item.elm.cells[columnIndex]).includes(value)
-        )
-      );
-    } else {
-      list.filter();
-    }
+    list.filter(
+      activeSelects.length ? (item) => selectFiltersMatch(item, activeSelects) : undefined
+    );
 
+    // Must run after filter(): search()'s searchComplete is what the result count listens to.
     const searchTerms = searchControls
       .map((el) => el.value.trim())
       .filter(Boolean);
