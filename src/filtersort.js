@@ -338,7 +338,7 @@ function getCellCategoryTexts(cell) {
  * @param {{ columnIndex: number, value: string }[]} activeSelects
  * @returns {boolean}
  */
-function selectFiltersMatch(item, activeSelects) {
+function doSelectFiltersMatch(item, activeSelects) {
   return activeSelects.every(({ columnIndex, value }) =>
     getCellCategoryTexts(item.elm.cells[columnIndex]).includes(value)
   );
@@ -478,11 +478,12 @@ function wireFilters(table, list, scopeElement) {
       }))
       .filter((select) => select.value);
 
-    list.filter(
-      activeSelects.length ? (item) => selectFiltersMatch(item, activeSelects) : undefined
-    );
+    const selectPredicate = activeSelects.length
+      ? (item) => doSelectFiltersMatch(item, activeSelects)
+      : undefined;
+    list.filter(selectPredicate);
 
-    // Must run after filter(): search()'s searchComplete is what the result count listens to.
+    // filter() must apply before search(), because search()'s searchComplete event drives the result count.
     const searchTerms = searchControls
       .map((el) => el.value.trim())
       .filter(Boolean);
