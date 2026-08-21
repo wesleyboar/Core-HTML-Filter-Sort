@@ -331,14 +331,14 @@ function getCellCategoryTexts(cell) {
 }
 
 /**
- * Whether `item`'s own categories contain every active select's value —
+ * Whether `item`'s own categories satisfy every active select filter —
  * exact match, since List.js's `search()` mishandles punctuation like a comma.
  *
  * @param {{ elm: HTMLTableRowElement }} item
  * @param {{ columnIndex: number, value: string }[]} activeSelects
  * @returns {boolean}
  */
-function doSelectFiltersMatch(item, activeSelects) {
+function matchesActiveSelects(item, activeSelects) {
   return activeSelects.every(({ columnIndex, value }) =>
     getCellCategoryTexts(item.elm.cells[columnIndex]).includes(value)
   );
@@ -478,12 +478,11 @@ function wireFilters(table, list, scopeElement) {
       }))
       .filter((select) => select.value);
 
-    const selectPredicate = activeSelects.length
-      ? (item) => doSelectFiltersMatch(item, activeSelects)
+    const filterByActiveSelects = activeSelects.length
+      ? (item) => matchesActiveSelects(item, activeSelects)
       : undefined;
-    list.filter(selectPredicate);
+    list.filter(filterByActiveSelects);
 
-    // filter() must apply before search(), because search()'s searchComplete event drives the result count.
     const searchTerms = searchControls
       .map((el) => el.value.trim())
       .filter(Boolean);
