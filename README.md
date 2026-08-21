@@ -93,4 +93,6 @@ If a select filter's cell can hold more than one category (e.g. a "Tags" column)
 
 ## Requirements
 
-- A `window.List` ≥2 global must be loaded before `filtersort()` is called: [`list.js-fixed`](https://www.npmjs.com/package/list.js-fixed) ([why not upstream `list.js`](https://github.com/javve/list.js/issues/699)), or upstream `list.js` if you don't need punctuation (e.g. a comma) to work in the search box.
+- A `window.List` ≥2 global must be loaded before `filtersort()` is called:
+    - **either** [`list.js-fixed`](https://www.npmjs.com/package/list.js-fixed) ([to fix bug with punctuation in search](https://github.com/javve/list.js/issues/699))
+    - **or** [`list.js`](https://www.npmjs.com/package/list.js) if user need not search punctuation.
