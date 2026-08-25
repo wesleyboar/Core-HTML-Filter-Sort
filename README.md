@@ -47,20 +47,22 @@ Add `class="js-filtersort"` to any `<table>`. A `<thead>` with column headers an
 To auto-build a filter bar above a table, add `id` and filter attributes to the table:
 
 - `data-filtersort-search` — include a search input (boolean presence attribute)
-- `data-filtersort-select-cols` — comma-separated column numbers, one select filter per number
+- `data-filtersort-select-cols-via-child` — comma-separated column numbers, one select filter per number; each **child element** of a cell is a value.
+- `data-filtersort-select-cols-via-comma` — comma-separated column numbers, one select filter per number; each **comma-separated value** of a cell is a value.
 
 ```html
 <table id="my-table" class="js-filtersort"
   data-filtersort-search
-  data-filtersort-select-cols="1,3">
+  data-filtersort-select-cols-via-child="1,3"
+  data-filtersort-select-cols-via-comma="4">
   …
 </table>
 ```
 
 > **Note:**
-> `data-filtersort-select-cols="1"` creates a select filter for the **1st** column, `"2"` for the **2nd**, _et cetera_. Select filter labels are auto-derived from `<th>` text. The filter markup is self-injected by `filtersort.js` on first call (no extra manual HTML required).
+> `data-filtersort-select-cols-via-child="1"` creates a select filter for the **1st** column, `"2"` for the **2nd**, _et cetera_. Select filter labels are auto-derived from `<th>` text. The filter markup is self-injected by `filtersort.js` on first call (no extra manual HTML required).
 
-If a select filter's cell can hold more than one category (e.g. a "Tags" column), wrap each category in its own child element, such as a `<p>` or `<span>`. Each child element becomes a separate, exact-text filter option — so a category name may safely contain a comma.
+If a `data-filtersort-select-cols-via-child` cell can hold more than one category (e.g. a "Category" column), wrap each category in its own child element, such as a `<p>` or `<span>`. Each child element becomes a separate, exact-text filter option — so a category name may safely contain a comma.
 
 ```html
 <td>
@@ -74,6 +76,12 @@ If a select filter's cell can hold more than one category (e.g. a "Tags" column)
 
 > **Note:**
 > A cell with zero or one child element is treated as a single category using its whole text (same as a plain `<td>Active</td>`).
+
+If a `data-filtersort-select-cols-via-comma` cell can hold more than one category (e.g. a "Tags" column), separate them with a comma instead — no wrapper elements needed. Use this only when a category name never itself contains a comma.
+
+```html
+<td>Cyberinfrastructure, Open Science, Reproducibility</td>
+```
 
 ### `filtersort()` Options
 

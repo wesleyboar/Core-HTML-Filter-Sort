@@ -19,7 +19,7 @@ let listJsMissingLogged = false;
 /**
  * @typedef {FilterSpecForSearch | FilterSpecForSelect} FilterSpec
  * @typedef {{ type: 'search' }} FilterSpecForSearch
- * @typedef {{ type: 'select', column: number }} FilterSpecForSelect - column is 1-based
+ * @typedef {{ type: 'select', column: number, splitStrategy: 'element' | 'comma' }} FilterSpecForSelect - column is 1-based
  */
 
 /**
@@ -53,17 +53,31 @@ function readFilterAttrs(table) {
     specs.push({ type: 'search' });
   }
 
-  const selectCols = table.getAttribute('data-filtersort-select-cols');
-  if (selectCols) {
-    for (const raw of selectCols.split(',')) {
-      const col = parseInt(raw.trim(), 10);
-      if (!isNaN(col) && col > 0) {
-        specs.push({ type: 'select', column: col });
-      }
-    }
-  }
+  addSelectSpecs(specs, table, 'data-filtersort-select-cols-via-child', 'element');
+  addSelectSpecs(specs, table, 'data-filtersort-select-cols-via-comma', 'comma');
 
   return specs.length ? specs : null;
+}
+
+/**
+ * Parses a comma-separated column-number attribute into select filter specs.
+ *
+ * @param {FilterSpec[]} specs
+ * @param {HTMLTableElement} table
+ * @param {string} attrName
+ * @param {'element' | 'comma'} splitStrategy
+ */
+function addSelectSpecs(specs, table, attrName, splitStrategy) {
+  const selectCols = table.getAttribute(attrName);
+  if (!selectCols) {
+    return;
+  }
+  for (const raw of selectCols.split(',')) {
+    const col = parseInt(raw.trim(), 10);
+    if (!isNaN(col) && col > 0) {
+      specs.push({ type: 'select', column: col, splitStrategy });
+    }
+  }
 }
 
 /**
@@ -99,9 +113,10 @@ function sortSelectOptions(optionTexts) {
 /**
  * @param {HTMLTableElement} table
  * @param {number} columnIndex
+ * @param {'element' | 'comma'} splitStrategy
  * @returns {string[]}
  */
-function collectSelectOptions(table, columnIndex) {
+function collectSelectOptions(table, columnIndex, splitStrategy) {
   const tbody = table.tBodies[0];
   if (!tbody) {
     return [];
@@ -114,7 +129,7 @@ function collectSelectOptions(table, columnIndex) {
     const cell = row.cells[columnIndex];
     warnIfRowCellMissing(table, cell);
 
-    for (const optionText of getCellCategoryTexts(cell)) {
+    for (const optionText of getCellCategoryTexts(cell, splitStrategy)) {
       if (seen.has(optionText)) {
         continue;
       }
@@ -184,7 +199,7 @@ function wireSelectFilterLabel(label, table, spec) {
   select.id = controlId;
   registerFilterControl(select, table.id);
 
-  for (const optionText of collectSelectOptions(table, spec.column - 1)) {
+  for (const optionText of collectSelectOptions(table, spec.column - 1, spec.splitStrategy)) {
     const option = document.createElement('option');
     option.textContent = optionText;
     select.append(option);
@@ -304,19 +319,31 @@ function getCellText(cell) {
 /**
  * Discrete category values for a select filter's cell.
  *
- * A cell with multiple categories must wrap each one in its own child
- * element (e.g. two `<p>` or two `<span>` tags); those child elements are
- * read individually so a category's own text (which may contain a comma) is
- * never split apart, and the parent cell's flattened text is never read as
- * an extra, concatenated category. A cell with zero or one child element is
- * treated as a single category, using the whole cell's text.
+ * With the `'comma'` strategy, the cell's whole text is split on commas —
+ * for columns (e.g. "Tags") whose categories never contain a comma
+ * themselves.
+ *
+ * With the `'element'` strategy, a cell with multiple categories must wrap
+ * each one in its own child element (e.g. two `<p>` or two `<span>` tags);
+ * those child elements are read individually so a category's own text
+ * (which may contain a comma) is never split apart, and the parent cell's
+ * flattened text is never read as an extra, concatenated category. A cell
+ * with zero or one child element is treated as a single category, using the
+ * whole cell's text.
  *
  * @param {HTMLTableCellElement | undefined} cell
+ * @param {'element' | 'comma'} splitStrategy
  * @returns {string[]}
  */
-function getCellCategoryTexts(cell) {
+function getCellCategoryTexts(cell, splitStrategy) {
   if (!cell) {
     return [];
+  }
+  if (splitStrategy === 'comma') {
+    return getCellText(cell)
+      .split(',')
+      .map((piece) => piece.trim())
+      .filter(Boolean);
   }
   const categoryEls = [ ...cell.children ];
   if (categoryEls.length > 1) {
