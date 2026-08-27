@@ -74,9 +74,6 @@
 /* TABLE */
 
 table.js-filtersort {
-  & tbody:empty::before {
-    content: 'No results found';
-  }
 
   & button.js-sort::after {
     font-size: smaller;
@@ -91,4 +88,8 @@ button.js-sort {
   &:focus-visible {
     outline-offset: 0.25em;
   }
+}
+
+tr.js-filtersort-empty > td {
+  text-align: center;
 }

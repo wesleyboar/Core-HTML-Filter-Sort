@@ -42,6 +42,14 @@ Add `class="js-filtersort"` to any `<table>`. A `<thead>` with column headers an
 </table>
 ```
 
+When filtering or searching leaves no rows, a `<tr>` spanning all columns is added automatically, reading its text from `data-filtersort-empty-text` (default: `"No results found"`).
+
+```html
+<table class="js-filtersort" data-filtersort-empty-text="No stations match your filters">
+  …
+</table>
+```
+
 ### Filter UI
 
 To auto-build a filter bar above a table, add `id` and filter attributes to the table:

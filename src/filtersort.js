@@ -4,8 +4,12 @@ const SORT_TABLE_CLASS = 'js-filtersort';
 const FILTER_CLASS = 'js-filtersort-filter';
 const FILTER_LIST_CLASS = 'js-filtersort-form';
 const OUTPUT_CLASS = 'js-filtersort-total';
+const EMPTY_ROW_CLASS = 'js-filtersort-empty';
 const DEPEND_LIST_CLASS = 'js-list';
 const DEPEND_BUTTON_CLASS = 'js-sort';
+
+const EMPTY_TEXT_ATTR = 'data-filtersort-empty-text';
+const DEFAULT_EMPTY_TEXT = 'No results found';
 
 const DEFAULT_TABLE_SELECTOR = 'table.' + SORT_TABLE_CLASS;
 const NOT_SORTABLE_SELECTOR = 'th.not-filtersort';
@@ -477,6 +481,44 @@ function wireFilterCount(tableId, list, scopeElement) {
 
 /**
  * @param {HTMLTableElement} table
+ * @param {number} columnCount
+ * @returns {HTMLTableRowElement}
+ */
+function buildEmptyRow(table, columnCount) {
+  const row = document.createElement('tr');
+  row.className = EMPTY_ROW_CLASS;
+
+  const cell = document.createElement('td');
+  cell.colSpan = columnCount;
+  cell.textContent = table.getAttribute(EMPTY_TEXT_ATTR) || DEFAULT_EMPTY_TEXT;
+
+  row.append(cell);
+  return row;
+}
+
+/**
+ * @param {HTMLTableElement} table
+ * @param {HTMLTableSectionElement} tbody
+ * @param {SortableTableList} list
+ * @param {number} columnCount
+ */
+function wireEmptyRow(table, tbody, list, columnCount) {
+  const emptyRow = buildEmptyRow(table, columnCount);
+
+  const sync = () => {
+    if (list.matchingItems.length === 0) {
+      tbody.append(emptyRow);
+    } else {
+      emptyRow.remove();
+    }
+  };
+
+  list.on('searchComplete', sync);
+  sync();
+}
+
+/**
+ * @param {HTMLTableElement} table
  * @param {SortableTableList} list
  * @param {ParentNode} scopeElement
  */
@@ -613,6 +655,7 @@ function prepSortableTable(table, scopeElement, notSortableSelector, buttonClass
 
   list.on('sortComplete', () => syncAriaFromListButtons(columns));
   syncAriaFromListButtons(columns);
+  wireEmptyRow(table, tbody, list, headerRow.cells.length);
   if (table.id) {
     wireFilters(table, list, scopeElement);
     wireFilterCount(table.id, list, scopeElement);
