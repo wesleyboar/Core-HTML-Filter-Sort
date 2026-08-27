@@ -95,8 +95,10 @@ If a `data-filtersort-select-cols-via-comma` cell can hold more than one categor
 
 A page can pre-select a category filter via the URL:
 
-- `#category-name` — hash fragment (takes precedence when both are present)
-- `?category=category-name` — query parameter (used only if there's no hash)
+- `#Category Name` — hash fragment (takes precedence when both are present)\
+    <sup>supports special characters: `#Category, Name & Ampersand`</sup>
+- `?category=Category Name` — query parameter (used only if there's no hash)\
+    <sup>supports special characters: `?category=Category, Name %26 Ampersand`</sup>
 
 The identifier is URL-decoded (so `%20` becomes a space, supporting multi-word categories) then matched **exactly** against each select filter's option text; every select filter across every table with a matching option gets set. The page also reacts to in-page hash changes (`hashchange`/`popstate`) without a reload.
 
