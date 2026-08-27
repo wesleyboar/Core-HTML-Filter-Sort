@@ -19,6 +19,8 @@ const FILTER_SEARCH_LABEL_SELECTOR = 'label:has(input[type="search"])';
 const FILTER_SELECT_LABEL_SELECTOR = 'label:has(select)';
 
 let listJsMissingLogged = false;
+let urlCategoryListenersWired = false;
+const urlCategoryScopes = [];
 
 /**
  * @typedef {FilterSpecForSearch | FilterSpecForSelect} FilterSpec
@@ -663,6 +665,48 @@ function prepSortableTable(table, scopeElement, notSortableSelector, buttonClass
 }
 
 /**
+ * Reads the category identifier to auto-select from the URL. The hash
+ * fragment takes precedence over the `category` query param.
+ *
+ * @returns {string | null}
+ */
+function getCategoryIdentifierFromUrl() {
+  const hash = window.location.hash.slice(1);
+  const raw = hash || new URLSearchParams(window.location.search).get('category');
+  if (!raw) {
+    return null;
+  }
+  try {
+    return decodeURIComponent(raw);
+  } catch {
+    return null; // malformed percent-encoding, e.g. a lone '%'
+  }
+}
+
+/**
+ * Sets every select filter in scope whose options include an exact match
+ * for the URL's category identifier, then dispatches 'change' so the
+ * existing wireFilters()/applyFilters() listener does the actual filtering.
+ *
+ * @param {ParentNode} scopeElement
+ */
+function applyCategoryFilterFromUrl(scopeElement) {
+  const identifier = getCategoryIdentifierFromUrl();
+  if (identifier === null) {
+    return;
+  }
+
+  for (const select of scopeElement.querySelectorAll('select.' + FILTER_CLASS)) {
+    const hasMatch = [ ...select.options ].some((option) => option.value === identifier);
+    if (!hasMatch) {
+      continue;
+    }
+    select.value = identifier;
+    select.dispatchEvent(new Event('change'));
+  }
+}
+
+/**
  * Inject the filter `<template>` into the DOM if not already present.
  */
 function ensureFilterTemplate() {
@@ -709,4 +753,14 @@ export default function filtersort({
       prepSortableTable(table, scopeElement, notSortableSelector, buttonClass, searchIconClass, countClass);
     }
   });
+
+  applyCategoryFilterFromUrl(scopeElement);
+  urlCategoryScopes.push(scopeElement);
+
+  if (!urlCategoryListenersWired) {
+    urlCategoryListenersWired = true;
+    const reapply = () => urlCategoryScopes.forEach(applyCategoryFilterFromUrl);
+    window.addEventListener('hashchange', reapply);
+    window.addEventListener('popstate', reapply);
+  }
 }
