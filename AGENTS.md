@@ -1,6 +1,7 @@
 # AGENTS.md
 
 - [Architecture](#architecture)
+- [Vocab](#vocab)
 - [Commits](#commits)
 - [Pull Requests](#pull-requests)
 
@@ -12,6 +13,10 @@ This is a **vanilla JavaScript npm package**. No build step, no bundler, no serv
 
 - When updating dependencies, use `npm` commands (e.g. `uninstall`/`install`); do not hand-edit lockfile entries.
 
+## Vocab
+
+- Use the word "deleted", not "removed".
+
 ## Commits
 
 - **Format:** `.gitmessage` (fallback: `~/.gitmessage`)
@@ -19,11 +24,11 @@ This is a **vanilla JavaScript npm package**. No build step, no bundler, no serv
 ## Pull Requests
 
 - **Title:** `.gitmessage` (fallback: `~/.gitmessage`)
-- **Description:** `.github/PULL_REQUEST_TEMPLATE.md`
+- **Description:** `.github/PULL_REQUEST_TEMPLATE.md` (fallback: `~/.github/PULL_REQUEST_TEMPLATE.md`)
   - In general:
     - When updating, first re-read the current description, because it may have been edited.
     - Be concise: plain language, simple sentences, present lists as bullets not prose.
-    - Explanatory rationale specific to this PR's decisions belongs in [review comments](#review-comments), not the description.
+    - Explanatory rationale specific to this PR's decisions belong in [review comments](#review-comments), not description.
     - Code comments are only for durable, non-obvious facts for future readers regardless of PR history.
     - Say each fact once (e.g. a dependency named in "Related" should not be repeated in "Notes").
   - In "Overview" section, match the template's example length (1 sentence) and density — not just its stated max (1–3), and not a single sentence stitched together from several clauses.
