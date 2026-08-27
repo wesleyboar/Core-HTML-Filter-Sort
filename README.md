@@ -91,6 +91,15 @@ If a `data-filtersort-select-cols-via-comma` cell can hold more than one categor
 <td>Cyberinfrastructure, Open Science, Reproducibility</td>
 ```
 
+### URL-Driven Category Selection
+
+A page can pre-select a category filter via the URL:
+
+- `#category-name` — hash fragment (takes precedence when both are present)
+- `?category=category-name` — query parameter (used only if there's no hash)
+
+The identifier is URL-decoded (so `%20` becomes a space, supporting multi-word categories) then matched **exactly** against each select filter's option text; every select filter across every table with a matching option gets set. The page also reacts to in-page hash changes (`hashchange`/`popstate`) without a reload.
+
 ### `filtersort()` Options
 
 | Option | Default | Description |
