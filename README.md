@@ -144,9 +144,6 @@ To auto-build a filter bar above an accordion list, add `id` and filter attribut
 </div>
 ```
 
-> **Note:**
-> Add these attributes and hidden facet elements to the HTML yourself. `filtersort.js` creates the visible search input and checkbox controls on first call.
-
 ### URL-Driven Category Selection
 
 #### Tables
