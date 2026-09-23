@@ -81,7 +81,9 @@ To generate checkbox facets, place hidden markers inside each `<details>`. `data
 
 The filter controls, reset button, result count, and empty message are generated automatically. Customize the empty message with `data-filtersort-empty-text` on the container. List.js filters whole `<details>` elements, so a matching accordion's `<summary>` and body stay together. See the [working accordion example](examples/accordions.html).
 
-### Table Filter UI
+### Filter UI
+
+#### Tables
 
 To auto-build a filter bar above a table, add `id` and filter attributes to the table:
 
@@ -122,7 +124,13 @@ If a `data-filtersort-select-cols-via-comma` cell can hold more than one categor
 <td>Cyberinfrastructure, Open Science, Reproducibility</td>
 ```
 
-### Table URL-Driven Category Selection
+#### Accordions
+
+Accordion filter UI is supported. `data-filtersort-search` generates a search input, and `data-filtersort-facet` / `data-filtersort-value` markers generate checkbox groups, as shown in the [accordion markup](#accordions). A reset button, result count, and empty message are also generated. The table column-based select filters are not supported for accordions.
+
+### URL-Driven Category Selection
+
+#### Tables
 
 A page can pre-select a category filter via the URL:
 
@@ -132,6 +140,10 @@ A page can pre-select a category filter via the URL:
     <sup>supports special characters: `?category=Category, Name %26 Ampersand`</sup>
 
 The identifier is URL-decoded (so `%20` becomes a space, supporting multi-word categories) then matched **exactly** against each select filter's option text; every select filter across every table with a matching option gets set. The page also reacts to in-page hash changes (`hashchange`/`popstate`) without a reload.
+
+#### Accordions
+
+URL-driven category selection is not supported for accordions yet. The hash and `?category=` parameter do not preselect accordion checkboxes or search text.
 
 ### `filtersort()` Options
 
