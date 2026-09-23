@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Table filtering example</title>
+  <link rel="stylesheet" href="../src/filtersort.structure.css">
+</head>
+<body>
+  <h1>Research systems</h1>
+  <table id="systems" class="js-filtersort" data-filtersort-search data-filtersort-select-cols-via-child="2">
+    <thead>
+      <tr><th>Name</th><th>Status</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Frontera</td><td>Active</td></tr>
+      <tr><td>Stampede3</td><td>Active</td></tr>
+      <tr><td>Legacy system</td><td>Retired</td></tr>
+    </tbody>
+  </table>
+  <script src="https://cdn.jsdelivr.net/npm/list.js-fixed@2/dist/list.min.js"></script>
+  <script type="module">
+    import filtersort from '../src/filtersort.js';
+    filtersort();
+  </script>
+</body>
+</html>

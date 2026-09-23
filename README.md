@@ -1,6 +1,6 @@
 # TACC: HTML Filter-Sort
 
-Filterable, sortable HTML tables powered by [List.js](https://listjs.com/) — optimized for [TACC/Core-CMS](https://github.com/TACC/Core-CMS) pages.
+Filterable, sortable HTML tables and filterable native accordions (`<details>`) powered by [List.js](https://listjs.com/) — optimized for [TACC/Core-CMS](https://github.com/TACC/Core-CMS) pages.
 
 ## Usage
 
@@ -23,7 +23,9 @@ E.g. [JSDelivr](https://www.jsdelivr.com/):
 > https://cdn.jsdelivr.net/gh/wesleyboar/filter-sort@__SHA__/src/filtersort.js
 > ```
 
-### Table Markup
+### Supported Markup
+
+#### Tables
 
 Add `class="js-filtersort"` to any `<table>`. A `<thead>` with column headers and a `<tbody>` are required.
 
@@ -50,7 +52,36 @@ When filtering or searching leaves no rows, a `<tr>` spanning all columns is add
 </table>
 ```
 
-### Filter UI
+See the [working table example](examples/tables.html).
+
+#### Accordions
+
+Add `class="js-filtersort-accordion"` and an `id` to a container, with a direct `.js-list` child containing only `<details>` elements. Add `data-filtersort-search` to generate a search field. The search checks both the `<summary>` and the accordion body, including text in closed accordions.
+
+To generate checkbox facets, place hidden markers inside each `<details>`. `data-filtersort-facet` names the checkbox group; `data-filtersort-value` names an option. A details item can have multiple values in the same group. Checked values within a group match **any** value; different groups must **all** match. The accordions retain their native open state while filtering.
+
+```html
+<div id="resources" class="js-filtersort-accordion" data-filtersort-search>
+  <div class="js-list">
+    <details>
+      <summary>GPU cluster</summary>
+      <span hidden data-filtersort-facet="Resource Type" data-filtersort-value="GPU Compute"></span>
+      <span hidden data-filtersort-facet="Status" data-filtersort-value="Active"></span>
+      <p>Accelerated compute for AI model training.</p>
+    </details>
+    <details>
+      <summary>Cloud platform</summary>
+      <span hidden data-filtersort-facet="Resource Type" data-filtersort-value="Cloud"></span>
+      <span hidden data-filtersort-facet="Status" data-filtersort-value="Active"></span>
+      <p>Cloud services for research projects.</p>
+    </details>
+  </div>
+</div>
+```
+
+The filter controls, reset button, result count, and empty message are generated automatically. Customize the empty message with `data-filtersort-empty-text` on the container. List.js filters whole `<details>` elements, so a matching accordion's `<summary>` and body stay together. See the [working accordion example](examples/accordions.html).
+
+### Table Filter UI
 
 To auto-build a filter bar above a table, add `id` and filter attributes to the table:
 
@@ -91,7 +122,7 @@ If a `data-filtersort-select-cols-via-comma` cell can hold more than one categor
 <td>Cyberinfrastructure, Open Science, Reproducibility</td>
 ```
 
-### URL-Driven Category Selection
+### Table URL-Driven Category Selection
 
 A page can pre-select a category filter via the URL:
 
@@ -106,8 +137,9 @@ The identifier is URL-decoded (so `%20` becomes a space, supporting multi-word c
 
 | Option | Default | Description |
 |---|---|---|
-| `scopeElement` | `document` | Root element to search for tables |
+| `scopeElement` | `document` | Root element to search for supported markup |
 | `tableSelector` | `table.js-filtersort` | CSS selector for target tables |
+| `accordionSelector` | `.js-filtersort-accordion` | CSS selector for target accordion containers |
 | `notSortableSelector` | `th.not-filtersort` | Columns matching this are excluded |
 | `buttonClass` | `''` | Extra class(es) on sort `<button>` elements (e.g. `'btn btn-link'`) |
 

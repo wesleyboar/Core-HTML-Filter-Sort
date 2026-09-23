@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Accordion filtering example</title>
+  <link rel="stylesheet" href="../src/filtersort.structure.css">
+</head>
+<body>
+  <h1>Research resources</h1>
+  <div id="resources" class="js-filtersort-accordion" data-filtersort-search>
+    <div class="js-list">
+      <details>
+        <summary>GPU cluster</summary>
+        <span hidden data-filtersort-facet="Resource Type" data-filtersort-value="GPU Compute"></span>
+        <span hidden data-filtersort-facet="Status" data-filtersort-value="Active"></span>
+        <p>Accelerated compute for AI model training.</p>
+      </details>
+      <details>
+        <summary>Cloud platform</summary>
+        <span hidden data-filtersort-facet="Resource Type" data-filtersort-value="Cloud"></span>
+        <span hidden data-filtersort-facet="Status" data-filtersort-value="Active"></span>
+        <p>Cloud services for research projects.</p>
+      </details>
+      <details>
+        <summary>Retired GPU</summary>
+        <span hidden data-filtersort-facet="Resource Type" data-filtersort-value="GPU Compute"></span>
+        <span hidden data-filtersort-facet="Status" data-filtersort-value="Retired"></span>
+        <p>Older accelerator system.</p>
+      </details>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/list.js-fixed@2/dist/list.min.js"></script>
+  <script type="module">
+    import filtersort from '../src/filtersort.js';
+    filtersort();
+  </script>
+</body>
+</html>

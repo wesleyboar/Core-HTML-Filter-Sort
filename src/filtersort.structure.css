@@ -93,3 +93,22 @@ button.js-sort {
 tr.js-filtersort-empty > td {
   text-align: center;
 }
+
+/* ACCORDIONS */
+
+.filtersort-accordion-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 2rem;
+  margin-block-end: 1rem;
+}
+
+.filtersort-accordion-form > fieldset {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.filtersort-accordion-form > output {
+  align-self: end;
+}

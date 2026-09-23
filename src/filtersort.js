@@ -1,4 +1,5 @@
 import { FILTER_TEMPLATE_HTML } from './filtersort.html.js';
+import { DEFAULT_ACCORDION_SELECTOR, prepAccordions } from './filtersort.accordion.js';
 
 const SORT_TABLE_CLASS = 'js-filtersort';
 const FILTER_CLASS = 'js-filtersort-filter';
@@ -727,6 +728,7 @@ function ensureFilterTemplate() {
  * @param {string} [options.buttonClass=''] // e.g. 'c-button c-button--as-link'
  * @param {string} [options.searchIconClass=''] // e.g. 'icon icon-search icon-md'
  * @param {string} [options.countClass=''] // e.g. 'text-truncate'
+ * @param {string} [options.accordionSelector='.js-filtersort-accordion']
  */
 export default function filtersort({
   scopeElement = document,
@@ -735,12 +737,13 @@ export default function filtersort({
   buttonClass = '',
   searchIconClass = '',
   countClass = '',
+  accordionSelector = DEFAULT_ACCORDION_SELECTOR,
 } = {}) {
   if (typeof window.List !== 'function') {
     if (!listJsMissingLogged) {
       listJsMissingLogged = true;
       console.error(
-        '[filtersort] List.js is not loaded; sortable tables will not be enhanced.'
+        '[filtersort] List.js is not loaded; supported markup will not be enhanced.'
       );
     }
     return;
@@ -753,6 +756,8 @@ export default function filtersort({
       prepSortableTable(table, scopeElement, notSortableSelector, buttonClass, searchIconClass, countClass);
     }
   });
+
+  prepAccordions(scopeElement, accordionSelector);
 
   applyCategoryFilterFromUrl(scopeElement);
   urlCategoryScopes.push(scopeElement);
