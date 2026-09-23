@@ -159,7 +159,8 @@ The identifier is URL-decoded (so `%20` becomes a space, supporting multi-word c
 
 #### Accordions
 
-URL-driven category selection is not supported for accordions yet. The hash and `?category=` parameter do not preselect accordion checkboxes or search text.
+> [!IMPORTANT]
+> URL-driven category selection is **not** supported for accordions yet. The hash and `?category=` parameter do **not** preselect accordion checkboxes nor search text.
 
 ### `filtersort()` Options
 
