@@ -126,7 +126,26 @@ If a `data-filtersort-select-cols-via-comma` cell can hold more than one categor
 
 #### Accordions
 
-Accordion filter UI is supported. `data-filtersort-search` generates a search input, and `data-filtersort-facet` / `data-filtersort-value` markers generate checkbox groups, as shown in the [accordion markup](#accordions). A reset button, result count, and empty message are also generated. The table column-based select filters are not supported for accordions.
+To auto-build a filter bar above an accordion list, add `id` and filter attributes to the container and its `<details>` items:
+
+- `data-filtersort-search` — include a search input (boolean presence attribute on the container)
+- `data-filtersort-facet` — name a checkbox group (on a hidden child element of `<details>`)
+- `data-filtersort-value` — name a checkbox option (on the same child element)
+
+```html
+<div id="resources" class="js-filtersort-accordion" data-filtersort-search>
+  <div class="js-list">
+    <details>
+      <summary>GPU cluster</summary>
+      <span hidden data-filtersort-facet="Resource Type" data-filtersort-value="GPU Compute"></span>
+      …
+    </details>
+  </div>
+</div>
+```
+
+> **Note:**
+> Filter controls are self-injected by `filtersort.js` on first call (no extra manual HTML required). The table's `data-filtersort-select-cols-*` attributes do not apply to accordions.
 
 ### URL-Driven Category Selection
 
