@@ -145,7 +145,7 @@ To auto-build a filter bar above an accordion list, add `id` and filter attribut
 ```
 
 > **Note:**
-> Filter controls are self-injected by `filtersort.js` on first call (no extra manual HTML required). The table's `data-filtersort-select-cols-*` attributes do not apply to accordions.
+> Add these attributes and hidden facet elements to the HTML yourself. `filtersort.js` creates the visible search input and checkbox controls on first call.
 
 ### URL-Driven Category Selection
 
